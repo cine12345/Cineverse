@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NGT TV - Stream Anything</title>
+<meta name="theme-color" content="#0f0f13">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--primary:#3b82f6;--primary-glow:rgba(59,130,246,0.5);--bg-color:#0f0f13;--surface-color:rgba(30,30,35,0.85);--input-bg:#25252b;--text-main:#ffffff;--text-sub:#a1a1aa;--border:#3f3f46;--nav-height:70px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Roboto',sans-serif}
+body{background-color:var(--bg-color);color:var(--text-main);height:100dvh;width:100%;display:flex;flex-direction:column;overflow:hidden}
+#main-content{flex:1;position:relative;width:100%;overflow:hidden;background-color:var(--bg-color)}
+iframe{width:100%;height:100%;border:none;display:block}
+
+/* Profile Layer */
+#profile-layer{display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, #0f0f13 0%, #1a1a24 100%);z-index:50;overflow-y:auto;flex-direction:column}
+.auth-view{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:20px}
+.account-box{background:var(--surface-color);backdrop-filter:blur(15px);width:100%;max-width:380px;padding:40px 30px;border-radius:24px;text-align:center;border:1px solid var(--border);box-shadow:0 15px 35px rgba(0,0,0,0.5)}
+.brand-title{font-size:28px;font-weight:700;margin-bottom:8px;color:#fff;letter-spacing:1px}
+.brand-title span{color:var(--primary)}
+.subtitle{color:var(--text-sub);font-size:14px;margin-bottom:30px}
+
+/* Auth Tabs */
+.auth-tabs{display:flex;background:var(--input-bg);border-radius:12px;margin-bottom:25px;padding:5px}
+.auth-tab{flex:1;padding:10px;border:none;background:transparent;color:var(--text-sub);font-weight:600;font-size:14px;border-radius:8px;cursor:pointer;transition:.3s}
+.auth-tab.active{background:var(--primary);color:#fff;box-shadow:0 4px 10px var(--primary-glow)}
+
+.input-wrap{position:relative;margin-bottom:20px;text-align:left}
+.input-wrap i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-sub);font-size:18px}
+.input-wrap input{width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;padding:15px 15px 15px 50px;color:var(--text-main);font-size:15px;outline:none;transition:.3s}
+.input-wrap input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,0.2)}
+.btn-action{width:100%;background:var(--primary);color:#fff;border:none;padding:16px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:transform .2s, box-shadow .2s;margin-top:10px}
+.btn-action:hover{box-shadow:0 4px 15px var(--primary-glow)}
+.btn-action:active{transform:scale(0.98)}
+
+/* Dashboard */
+.dashboard-view{display:none;width:100%;padding:20px;animation:fadeIn .4s ease;max-width:500px;margin:0 auto}
+.user-header{display:flex;flex-direction:column;align-items:center;background:var(--surface-color);backdrop-filter:blur(10px);padding:30px;border-radius:24px;border:1px solid var(--border);margin-bottom:20px;text-align:center}
+.user-avatar{width:90px;height:90px;background:var(--input-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--primary);margin-bottom:15px;border:3px solid var(--primary);box-shadow:0 5px 15px var(--primary-glow)}
+.user-name{font-size:24px;font-weight:700;color:#fff;margin-bottom:5px}
+.status-badge{display:inline-block;margin-top:5px;font-size:12px;padding:6px 15px;border-radius:20px;background:rgba(76,175,80,0.2);color:#4caf50;font-weight:600}
+.status-badge.banned{background:rgba(244,67,54,0.2);color:#f44336}
+
+.dash-grid{display:grid;grid-template-columns:1fr;gap:15px;margin-top:10px}
+.dash-card{background:var(--surface-color);padding:18px 20px;border-radius:16px;border:1px solid var(--border);display:flex;align-items:center;gap:15px;cursor:pointer;transition:.2s}
+.dash-card:active{background:var(--input-bg);transform:scale(0.98)}
+.dash-card i{font-size:20px;color:var(--primary);width:45px;height:45px;background:rgba(59,130,246,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center}
+.dash-card h4{font-size:16px;color:var(--text-main);font-weight:600}
+
+/* Promo Card in Dashboard */
+.promo-card{background:linear-gradient(145deg, rgba(30,30,35,0.9), rgba(59,130,246,0.1)); border: 1px solid rgba(59,130,246,0.3);}
+.promo-card i{background:linear-gradient(135deg, #3b82f6, #8b5cf6); color:#fff; box-shadow:0 4px 10px rgba(59,130,246,0.4);}
+
+/* Navigation */
+.nav-container{height:var(--nav-height);background-color:rgba(15, 15, 19, 0.95);backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center;border-top:1px solid var(--border);flex-shrink:0;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav-item{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:none;border:none;color:var(--text-sub);cursor:pointer;transition:all .3s ease}
+.nav-item i{font-size:20px;margin-bottom:6px;padding:6px 18px;border-radius:20px;transition:.3s}
+.nav-item span{font-size:12px;font-weight:500}
+.nav-item.active{color:var(--primary)}
+.nav-item.active i{background:rgba(59,130,246,0.15)}
+
+.loading-spinner{width:20px;height:20px;border:2px solid #fff;border-bottom-color:transparent;border-radius:50%;animation:spin 1s linear infinite;display:none;margin:0 auto}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Bottom Toast */
+.toast-msg{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:12px 24px;border-radius:50px;font-size:14px;opacity:0;visibility:hidden;transition:.3s;z-index:2000;font-weight:600;box-shadow:0 5px 15px rgba(0,0,0,0.3);white-space:nowrap}
+.toast-msg.visible{opacity:1;visibility:visible;bottom:100px}
+
+/* Top App Promo Toast */
+.app-promo-toast {position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; padding: 12px 20px; border-radius: 50px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(59,130,246,0.5); z-index: 9999; transition: top 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); cursor: pointer; white-space: nowrap;}
+.app-promo-toast.show {top: 20px;}
+.app-promo-toast i.icon {font-size: 18px;}
+.app-promo-toast span {flex: 1;}
+
+/* Lock Modal */
+#lock-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,15,19,0.95);backdrop-filter:blur(10px);z-index:9999;align-items:center;justify-content:center;padding:30px;flex-direction:column;text-align:center}
+.lock-icon{font-size:60px;color:#f44336;margin-bottom:25px;background:rgba(244,67,54,0.1);width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.lock-title{font-size:26px;font-weight:700;color:#fff;margin-bottom:10px}
+.lock-desc{font-size:16px;color:var(--text-sub);line-height:1.6;max-width:300px}
+</style>
+</head>
+<body>
+
+<!-- Top Promo Toast -->
+<div id="app-promo" class="app-promo-toast" onclick="goToDownload()">
+    <i class="fas fa-mobile-screen-button icon"></i>
+    <span>Download our app for better experience</span>
+    <i class="fas fa-chevron-right" style="font-size:11px; margin-left:5px; background:rgba(255,255,255,0.2); padding:5px; border-radius:50%;"></i>
+</div>
+
+<main id="main-content">
+<!-- Default loads home.html -->
+<iframe id="web-frame" src="home.html" title="Web Content"></iframe>
+
+<!-- Profile / Auth Layer -->
+<div id="profile-layer">
+    
+    <!-- Login & Register Section -->
+    <div class="auth-view" id="auth-section">
+        <div class="account-box">
+            <h2 class="brand-title">NGT <span>ACCOUNT</span></h2>
+            <p class="subtitle" id="auth-subtitle">Login to access your profile</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchAuth('login')">Login</button>
+                <button class="auth-tab" id="tab-register" onclick="switchAuth('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form">
+                <div class="input-wrap">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="login-userid" placeholder="Username" required autocomplete="off">
+                </div>
+                <div class="input-wrap">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-pass" placeholder="Password" required autocomplete="off">
+                </div>
+                <button type="submit" class="btn-action" id="login-btn">
+                    <span id="login-lbl">Secure Login</span>
+                    <div class="loading-spinner" id="login-spin"></div>
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" style="display:none;">
+                <div class="input-wrap">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="reg-userid" placeholder="Choose Username" required autocomplete="off">
+                </div>
+                <div class="input-wrap">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="reg-pass" placeholder="Create Password" required autocomplete="off">
+                </div>
+                <button type="submit" class="btn-action" id="reg-btn">
+                    <span id="reg-lbl">Create Account</span>
+                    <div class="loading-spinner" id="reg-spin"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div class="dashboard-view" id="dashboard-section">
+        <div class="user-header">
+            <div class="user-avatar"><i class="fas fa-user"></i></div>
+            <h3 id="dash-name" class="user-name">User</h3>
+            <div id="dash-status" class="status-badge">Registered Member</div>
+        </div>
+        <div class="dash-grid">
+            <!-- App Download Promo Card in Dashboard -->
+            <div class="dash-card promo-card" onclick="goToDownload()">
+                <i class="fas fa-download"></i>
+                <h4>Download Our App</h4>
+                <span style="margin-left:auto; background:#f43f5e; color:#fff; font-size:10px; padding:4px 8px; border-radius:12px; font-weight:700; letter-spacing:0.5px; box-shadow:0 2px 5px rgba(244,63,94,0.4);">NEW</span>
+            </div>
+
+            <div class="dash-card" onclick="goToTab('tv', document.querySelectorAll('.nav-item')[1])"><i class="fas fa-tv"></i><h4>Live Channels</h4></div>
+            <div class="dash-card" onclick="goToTab('movie', document.querySelectorAll('.nav-item')[2])"><i class="fas fa-film"></i><h4>Movies</h4></div>
+            <div class="dash-card" onclick="goToTab('adult', document.querySelectorAll('.nav-item')[3])"><i class="fas fa-circle-exclamation"></i><h4>18+ Content</h4></div>
+            <div class="dash-card" onclick="logout()" style="border-color: rgba(244,67,54,0.3);"><i class="fas fa-sign-out-alt" style="color:#f44336; background:rgba(244,67,54,0.1)"></i><h4 style="color:#f44336">Logout Account</h4></div>
+        </div>
+    </div>
+</div>
+</main>
+
+<!-- Lock Modal (Only for Banned Users) -->
+<div id="lock-modal">
+    <div class="lock-icon"><i class="fas fa-ban"></i></div>
+    <h2 class="lock-title">Account Suspended</h2>
+    <p class="lock-desc">Your account has been disabled by the administrator due to policy violation.</p>
+</div>
+
+<!-- Navigation Bar -->
+<nav class="nav-container">
+    <button class="nav-item active" onclick="tab('home', this)"><i class="fas fa-house"></i><span>Home</span></button>
+    <button class="nav-item" onclick="tab('tv', this)"><i class="fas fa-tv"></i><span>TV</span></button>
+    <button class="nav-item" onclick="tab('movie', this)"><i class="fas fa-clapperboard"></i><span>Movie</span></button>
+    <button class="nav-item" onclick="tab('adult', this)"><i class="fas fa-circle-exclamation"></i><span>18+</span></button>
+    <button class="nav-item" id="nav-profile-btn" onclick="tab('profile', this)"><i class="fas fa-user"></i><span>Profile</span></button>
+</nav>
+
+<div id="toast" class="toast-msg"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get, query, orderByChild, equalTo, onValue, update, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAb8YsPMOY53GxiycCL6G0MPZdgWe3nnyY",
+  authDomain: "movie-92659.firebaseapp.com",
+  databaseURL: "https://movie-92659-default-rtdb.firebaseio.com",
+  projectId: "movie-92659",
+  storageBucket: "movie-92659.firebasestorage.app",
+  messagingSenderId: "1090734362509",
+  appId: "1:1090734362509:web:86be5583f6e8fcfdfa77c4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+let currentUserKey = null;
+let userStatus = 'active';
+
+function getLocalUser(){const u=localStorage.getItem('ngt_auth_user');return u?JSON.parse(u):null;}
+function getLocalDevice(){return localStorage.getItem('ngt_device_id');}
+
+// App Load Event - Show Promo Toast Once per session
+window.addEventListener('load', () => {
+    if(!sessionStorage.getItem('promo_shown')) {
+        setTimeout(() => {
+            const promo = document.getElementById('app-promo');
+            promo.classList.add('show');
+            
+            // Hide automatically after 3.5 seconds
+            setTimeout(() => {
+                promo.classList.remove('show');
+            }, 3500);
+            
+        }, 1000); // Wait 1 second after page loads to show
+        
+        // Save to session so it doesn't show again until tab is closed and reopened
+        sessionStorage.setItem('promo_shown', 'true');
+    }
+});
+
+// Go to Download Page Function
+window.goToDownload = function() {
+    // Hide the top toast if it's visible
+    document.getElementById('app-promo').classList.remove('show');
+    
+    // Hide profile layer
+    document.getElementById('profile-layer').style.display = 'none';
+    document.getElementById('web-frame').style.display = 'block';
+    
+    // Load download.html in the iframe
+    document.getElementById('web-frame').src = 'download.html';
+    
+    // Remove active styling from all nav items
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+}
+
+// UI Initialization
+function initUI() {
+    const u = getLocalUser();
+    const authView = document.getElementById('auth-section');
+    const dashView = document.getElementById('dashboard-section');
+    
+    if(u) {
+        authView.style.display = 'none';
+        dashView.style.display = 'block';
+        document.getElementById('dash-name').textContent = u.username;
+        const avatarDiv = document.querySelector('.user-avatar');
+        avatarDiv.innerHTML = `<img src="${DEFAULT_AVATAR}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+        avatarDiv.style.border = "3px solid var(--primary)";
+        currentUserKey = u.key;
+        monitorUser(u.key);
+    } else {
+        authView.style.display = 'flex';
+        dashView.style.display = 'none';
+    }
+}
+
+// Banned Status Check
+function monitorUser(key) {
+    const sRef = ref(db, 'users/' + key);
+    onValue(sRef, (snap) => {
+        const data = snap.val();
+        if(!data) { logout(); return; }
+        userStatus = data.status || 'active';
+        const badge = document.getElementById('dash-status');
+        
+        if(userStatus === 'banned') {
+            badge.textContent = 'Account Suspended';
+            badge.classList.add('banned');
+            document.getElementById('lock-modal').style.display = 'flex';
+        } else {
+            badge.textContent = 'Registered Member';
+            badge.classList.remove('banned');
+            document.getElementById('lock-modal').style.display = 'none';
+        }
+    });
+}
+
+// Form Switcher (Login <-> Register)
+window.switchAuth = function(type) {
+    document.getElementById('tab-login').classList.remove('active');
+    document.getElementById('tab-register').classList.remove('active');
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('register-form').style.display = 'none';
+
+    if(type === 'login') {
+        document.getElementById('tab-login').classList.add('active');
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('auth-subtitle').innerText = "Login to access your profile";
+    } else {
+        document.getElementById('tab-register').classList.add('active');
+        document.getElementById('register-form').style.display = 'block';
+        document.getElementById('auth-subtitle').innerText = "Create a new free account";
+    }
+}
+
+// Navigation Tabs Logic (No login restriction anymore)
+window.tab = function(t, e) {
+    if(userStatus === 'banned') { 
+        document.getElementById('lock-modal').style.display = 'flex'; 
+        return; 
+    }
+
+    const f = document.getElementById('web-frame');
+    const p = document.getElementById('profile-layer');
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    e.classList.add('active');
+
+    if(t === 'profile') {
+        f.style.display = 'none';
+        p.style.display = 'flex';
+    } else {
+        p.style.display = 'none';
+        f.style.display = 'block';
+
+        let targetFile = t + ".html";
+        if(t === 'adult') targetFile = "18+ADULT.html";
+
+        if(!f.src.endsWith(targetFile)) {
+            f.src = targetFile;
+        }
+    }
+}
+
+// Helper to switch tabs from dashboard
+window.goToTab = function(t, element) {
+    window.tab(t, element);
+}
+
+// Logout System
+window.logout = function() {
+    if(currentUserKey) {
+        update(ref(db, 'users/' + currentUserKey), { deviceId: null }).then(() => {
+            localStorage.removeItem('ngt_auth_user');
+            localStorage.removeItem('ngt_device_id');
+            location.reload();
+        });
+    } else {
+        localStorage.removeItem('ngt_auth_user');
+        localStorage.removeItem('ngt_device_id');
+        location.reload();
+    }
+}
+
+// Login Submit Event
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const b = document.getElementById('login-btn');
+    const l = document.getElementById('login-lbl');
+    const s = document.getElementById('login-spin');
+    const uid = document.getElementById('login-userid').value.trim();
+    const pass = document.getElementById('login-pass').value.trim();
+    
+    b.disabled = true; l.style.display = 'none'; s.style.display = 'block';
+
+    try {
+        const usersRef = query(ref(db, 'users'), orderByChild('username'), equalTo(uid));
+        const snap = await get(usersRef);
+
+        if(snap.exists()) {
+            let found = false; let userKey = ''; let userData = {}; let dbDeviceId = null;
+
+            snap.forEach((child) => {
+                const val = child.val();
+                if(val.password === pass) {
+                    found = true; userKey = child.key; userData = val; dbDeviceId = val.deviceId || null;
+                }
+            });
+
+            if(found) {
+                if(userData.status === 'banned') {
+                    notify("Your account is suspended!");
+                } else {
+                    const localDeviceId = getLocalDevice();
+                    if(dbDeviceId && dbDeviceId !== localDeviceId) {
+                        notify("Login Failed: Active on another device!");
+                    } else {
+                        let myDeviceId = localDeviceId || Date.now().toString() + Math.random().toString(36).substring(2);
+                        await update(ref(db, 'users/' + userKey), { deviceId: myDeviceId });
+                        localStorage.setItem('ngt_device_id', myDeviceId);
+                        localStorage.setItem('ngt_auth_user', JSON.stringify({ key: userKey, username: userData.username }));
+                        notify("Login Successful!");
+                        initUI();
+                    }
+                }
+            } else {
+                notify("Incorrect Password!");
+            }
+        } else {
+            notify("User not found! Please register.");
+        }
+    } catch(x) {
+        notify("Connection Error!");
+    } finally {
+        b.disabled = false; l.style.display = 'block'; s.style.display = 'none';
+    }
+});
+
+// Register Submit Event
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const b = document.getElementById('reg-btn');
+    const l = document.getElementById('reg-lbl');
+    const s = document.getElementById('reg-spin');
+    const uid = document.getElementById('reg-userid').value.trim();
+    const pass = document.getElementById('reg-pass').value.trim();
+
+    if(uid.length < 4) { notify("Username must be at least 4 characters!"); return; }
+    if(pass.length < 6) { notify("Password must be at least 6 characters!"); return; }
+
+    b.disabled = true; l.style.display = 'none'; s.style.display = 'block';
+
+    try {
+        const checkRef = query(ref(db, 'users'), orderByChild('username'), equalTo(uid));
+        const checkSnap = await get(checkRef);
+
+        if(checkSnap.exists()) {
+            notify("Username already taken! Try another.");
+        } else {
+            const newUserRef = push(ref(db, 'users'));
+            let myDeviceId = Date.now().toString() + Math.random().toString(36).substring(2);
+            
+            await set(newUserRef, {
+                username: uid,
+                password: pass,
+                status: 'active',
+                deviceId: myDeviceId,
+                createdAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('ngt_device_id', myDeviceId);
+            localStorage.setItem('ngt_auth_user', JSON.stringify({ key: newUserRef.key, username: uid }));
+            notify("Registration Successful!");
+            
+            document.getElementById('reg-userid').value = '';
+            document.getElementById('reg-pass').value = '';
+            initUI();
+        }
+    } catch(x) {
+        notify("Registration Error! Try again.");
+    } finally {
+        b.disabled = false; l.style.display = 'block'; s.style.display = 'none';
+    }
+});
+
+// Toast Notification System
+function notify(txt) {
+    const t = document.getElementById('toast');
+    t.innerText = txt; t.classList.add('visible');
+    setTimeout(() => t.classList.remove('visible'), 3000);
+}
+
+// Run on page load
+initUI();
+</script>
+</body>
+</html>
