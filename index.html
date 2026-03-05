@@ -198,7 +198,7 @@ const firebaseConfig = {
     messagingSenderId: "1069748173900",
     appId: "1:1069748173900:web:158d6336c0f4628133c8e9",
     measurementId: "G-V6DZ37WSBF"
-  };
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -215,32 +215,18 @@ window.addEventListener('load', () => {
         setTimeout(() => {
             const promo = document.getElementById('app-promo');
             promo.classList.add('show');
-            
-            // Hide automatically after 3.5 seconds
-            setTimeout(() => {
-                promo.classList.remove('show');
-            }, 3500);
-            
-        }, 1000); // Wait 1 second after page loads to show
-        
-        // Save to session so it doesn't show again until tab is closed and reopened
+            setTimeout(() => { promo.classList.remove('show'); }, 3500);
+        }, 1000);
         sessionStorage.setItem('promo_shown', 'true');
     }
 });
 
 // Go to Download Page Function
 window.goToDownload = function() {
-    // Hide the top toast if it's visible
     document.getElementById('app-promo').classList.remove('show');
-    
-    // Hide profile layer
     document.getElementById('profile-layer').style.display = 'none';
     document.getElementById('web-frame').style.display = 'block';
-    
-    // Load download.html in the iframe
     document.getElementById('web-frame').src = 'download.html';
-    
-    // Remove active styling from all nav items
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
 }
 
@@ -249,8 +235,11 @@ function initUI() {
     const u = getLocalUser();
     const authView = document.getElementById('auth-section');
     const dashView = document.getElementById('dashboard-section');
+    const webFrame = document.getElementById('web-frame');
+    const profileLayer = document.getElementById('profile-layer');
     
     if(u) {
+        // ইউজার লগইন করা থাকলে Dashboard দেখাবে এবং স্বাভাবিক নিয়মে Home খুলবে
         authView.style.display = 'none';
         dashView.style.display = 'block';
         document.getElementById('dash-name').textContent = u.username;
@@ -260,8 +249,19 @@ function initUI() {
         currentUserKey = u.key;
         monitorUser(u.key);
     } else {
+        // নতুন ইউজার হলে বা লগইন করা না থাকলে Force Profile/Register Page ওপেন হবে
         authView.style.display = 'flex';
         dashView.style.display = 'none';
+        
+        webFrame.style.display = 'none';
+        profileLayer.style.display = 'flex';
+        
+        // Navigation Bar এ Profile সিলেক্ট করে রাখা
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.getElementById('nav-profile-btn').classList.add('active');
+        
+        // নতুন ইউজারদের জন্য Register ট্যাব সিলেক্ট করে রাখা
+        switchAuth('register'); 
     }
 }
 
@@ -304,8 +304,16 @@ window.switchAuth = function(type) {
     }
 }
 
-// Navigation Tabs Logic (No login restriction anymore)
+// Navigation Tabs Logic (লগইন ছাড়া অন্য ট্যাবে যাওয়া বন্ধ করা হয়েছে)
 window.tab = function(t, e) {
+    const u = getLocalUser();
+    
+    // যদি লগইন করা না থাকে এবং প্রোফাইল ছাড়া অন্য ট্যাবে ক্লিক করে
+    if(!u && t !== 'profile') {
+        notify("অনুগ্রহ করে প্রথমে একাউন্ট খুলুন বা লগইন করুন!");
+        return;
+    }
+
     if(userStatus === 'banned') { 
         document.getElementById('lock-modal').style.display = 'flex'; 
         return; 
@@ -332,10 +340,7 @@ window.tab = function(t, e) {
     }
 }
 
-// Helper to switch tabs from dashboard
-window.goToTab = function(t, element) {
-    window.tab(t, element);
-}
+window.goToTab = function(t, element) { window.tab(t, element); }
 
 // Logout System
 window.logout = function() {
@@ -389,8 +394,11 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
                         await update(ref(db, 'users/' + userKey), { deviceId: myDeviceId });
                         localStorage.setItem('ngt_device_id', myDeviceId);
                         localStorage.setItem('ngt_auth_user', JSON.stringify({ key: userKey, username: userData.username }));
+                        
                         notify("Login Successful!");
                         initUI();
+                        // লগইন হওয়ার পর Home পেইজে নিয়ে যাবে
+                        tab('home', document.querySelectorAll('.nav-item')[0]);
                     }
                 }
             } else {
@@ -440,11 +448,14 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
 
             localStorage.setItem('ngt_device_id', myDeviceId);
             localStorage.setItem('ngt_auth_user', JSON.stringify({ key: newUserRef.key, username: uid }));
-            notify("Registration Successful!");
             
             document.getElementById('reg-userid').value = '';
             document.getElementById('reg-pass').value = '';
+            
+            notify("Registration Successful!");
             initUI();
+            // একাউন্ট খোলার পর Home পেইজে নিয়ে যাবে
+            tab('home', document.querySelectorAll('.nav-item')[0]);
         }
     } catch(x) {
         notify("Registration Error! Try again.");
