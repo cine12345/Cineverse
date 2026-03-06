@@ -532,6 +532,9 @@ function renderGrid(list, container, isRelated = false) {
 }
 
 function openPlayer(movie) {
+
+showAd();
+  
   document.getElementById('pTitle').textContent = movie.name;
   video.src = movie.url;
   mainHeader.style.transform = "translateY(-100%)";
