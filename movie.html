@@ -2,17 +2,6 @@
 <html lang="en">
 <head>
 
-<script>
-  atOptions = {
-    'key' : '0626b06280186b5d4703896e1abbf80b',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js"></script>
-
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>CineVerse.top MOVIE 4K</title>
@@ -337,22 +326,14 @@
 const JSONBIN_URL = "https://api.jsonbin.io/v3/b/69a935e943b1c97be9b56f3a";
 
 /* ====== AD FUNCTION ====== */
-function showAd(){
-  const adOptions = document.createElement("script");
-  adOptions.innerHTML = `
-    atOptions = {
-      'key' : '0626b06280186b5d4703896e1abbf80b',
-      'format' : 'iframe',
-      'height' : 90,
-      'width' : 728,
-      'params' : {}
-    };
-  `;
-  document.body.appendChild(adOptions);
-
-  const adScript = document.createElement("script");
-  adScript.src = "https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js";
-  document.body.appendChild(adScript);
+<script>
+function openAdTab(){
+  window.open(
+    "https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js",
+    "_blank"
+  );
+}
+</script>
 }
   /* ====== AD FUNCTION ====== */
   
@@ -532,8 +513,8 @@ function renderGrid(list, container, isRelated = false) {
 }
 
 function openPlayer(movie) {
-
-showAd();
+  
+openAdTab();
   
   document.getElementById('pTitle').textContent = movie.name;
   video.src = movie.url;
