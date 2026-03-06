@@ -335,6 +335,26 @@
 
 <script>
 const JSONBIN_URL = "https://api.jsonbin.io/v3/b/69a935e943b1c97be9b56f3a";
+
+/* ====== AD FUNCTION ====== */
+function showAd(){
+  const adOptions = document.createElement("script");
+  adOptions.innerHTML = `
+    atOptions = {
+      'key' : '0626b06280186b5d4703896e1abbf80b',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  `;
+  document.body.appendChild(adOptions);
+
+  const adScript = document.createElement("script");
+  adScript.src = "https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js";
+  document.body.appendChild(adScript);
+}
+  /* ====== AD FUNCTION ====== */
   
 let allMovies = [];
 let uiTimer;
