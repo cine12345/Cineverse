@@ -289,6 +289,36 @@
 </div>
 
 <script>
+
+function openAdTab() {
+
+  var ad = window.open("", "_blank");
+
+  ad.document.write(`
+  <html>
+  <head>
+  <title>Advertisement</title>
+  </head>
+  <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#000;">
+
+  <script>
+    atOptions = {
+      'key' : '0626b06280186b5d4703896e1abbf80b',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  <\/script>
+
+  <script src="https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js"><\/script>
+
+  </body>
+  </html>
+  `);
+
+}
+ 
   var player = new Clappr.Player({
     source: '',
     parentId: '#player',
@@ -299,6 +329,7 @@
   });
 
   function playChannel(url) {
+   openAdTab();
     player.load(url);
     player.play();
     document.getElementById('player-wrapper').style.display = 'block';
