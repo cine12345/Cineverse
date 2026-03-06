@@ -503,35 +503,6 @@
 
         const playlist = "https://private-zone-by-xfireflix.pages.dev/playlist-isp-bdix.m3u";
 
-        function openAdTab() {
-
-  var ad = window.open("", "_blank");
-
-  ad.document.write(`
-  <html>
-  <head>
-  <title>Advertisement</title>
-  </head>
-  <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#000;">
-
-  <script>
-    atOptions = {
-      'key' : '0626b06280186b5d4703896e1abbf80b',
-      'format' : 'iframe',
-      'height' : 90,
-      'width' : 728,
-      'params' : {}
-    };
-  <\/script>
-
-  <script src="https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js"><\/script>
-
-  </body>
-  </html>
-  `);
-
-}
-
         const channelsGrid = document.getElementById("channelsGrid");
         const channelCountElement = document.getElementById("channelCount");
         const channelSearchElement = document.getElementById("channelSearch");
@@ -547,7 +518,7 @@
         let currentVideoUrl = "";
         let isOnline = navigator.onLine;
         let wasPlayingBeforeDisconnect = false;
-        const DEFAULT_LOGO = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iOCIgeGlsbD0iIzAwMDAwMCIvPgo8cGF0aCBkPSJNMzAgMTVMMTAgMzBMMzAgNDVINTBMMzAgMzBaIiBmaWxsPSIjMDBGRjU1Ii8+CjxjaXJjbGUgY3g9IjMwIiBjeT0iMzAiIHI9IjgiIGZpbGw9IiMwMEZGNTVCIi8+Cjwvc3ZnPgo=';
+        const DEFAULT_LOGO = '';
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
         });
