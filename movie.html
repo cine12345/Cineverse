@@ -324,18 +324,6 @@
 
 <script>
 const JSONBIN_URL = "https://api.jsonbin.io/v3/b/69a935e943b1c97be9b56f3a";
-
-/* ====== AD FUNCTION ====== */
-<script>
-function openAdTab(){
-  window.open(
-    "https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js",
-    "_blank"
-  );
-}
-</script>
-}
-  /* ====== AD FUNCTION ====== */
   
 let allMovies = [];
 let uiTimer;
@@ -513,9 +501,6 @@ function renderGrid(list, container, isRelated = false) {
 }
 
 function openPlayer(movie) {
-  
-openAdTab();
-  
   document.getElementById('pTitle').textContent = movie.name;
   video.src = movie.url;
   mainHeader.style.transform = "translateY(-100%)";
