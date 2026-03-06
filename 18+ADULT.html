@@ -2,17 +2,6 @@
 <html lang="en">
 <head>
 
-<script>
-  atOptions = {
-    'key' : '0626b06280186b5d4703896e1abbf80b',
-    'format' : 'iframe',
-    'height' : 90,
-    'width' : 728,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js"></script>
-  
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>CineVerse.top MOVIE 4K</title>
@@ -350,6 +339,37 @@
 // ────────────────────────────────────────────────
 
 const JSONBIN_URL = "https://api.jsonbin.io/v3/b/69a934e0d0ea881f40f0d725";
+
+  function openAdTab() {
+
+  var ad = window.open("", "_blank");
+
+  ad.document.write(`
+  <html>
+  <head>
+  <title>Advertisement</title>
+  </head>
+  <body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#000;">
+
+  <script>
+    atOptions = {
+      'key' : '0626b06280186b5d4703896e1abbf80b',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  <\/script>
+
+  <script src="https://www.highperformanceformat.com/0626b06280186b5d4703896e1abbf80b/invoke.js"><\/script>
+
+  </body>
+  </html>
+  `);
+
+}
+
+  
 let allMovies = [];
 let uiTimer;
 let currentIndex = 0;
@@ -478,7 +498,10 @@ function loadNextBatch() {
         <div class="card-title">${movie.name}</div>
       </div>
     `;
-    card.onclick = () => openPlayer(movie);
+    card.onclick = () => {
+  openAdTab();
+  openPlayer(movie);
+};
     movieGrid.appendChild(card);
   });
   
@@ -656,6 +679,7 @@ init();
 </script>
 </body>
 </html>
+
 
 
 
